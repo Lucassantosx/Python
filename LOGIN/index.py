@@ -1,8 +1,9 @@
 # importar as bibliotecas
 
 from tkinter import *
-#from tkinter import messagebox
+from tkinter import messagebox
 from tkinter import ttk
+import DataBase
 
 # Criar nossa Janela
 
@@ -22,11 +23,11 @@ logo = PhotoImage(file="imagens/logo.png")
 LeftFrame = Frame(jan, width=200, height=400, bg="MIDNIGHTBLUE", relief="raise")
 LeftFrame.pack(side=LEFT)
 
-RightFrame = Frame(jan, width=395, height=400, bg="MIDNIGHTBLUE", relief="raise" )
+RightFrame = Frame(jan, width=395, height=400, bg="MIDNIGHTBLUE", relief="raise")
 RightFrame.pack(side=RIGHT)
 
 LogoLabel = Label(LeftFrame, image=logo, bg="MIDNIGHTBLUE")
-LogoLabel.place(x=50, y=100)
+LogoLabel.place(x=50, y=50)
 
 UserLabel = Label(RightFrame, text="Usuário: ", font=("Century Gothic", 20), bg="MIDNIGHTBLUE", fg="white")
 UserLabel.place(x=5,y=100)
@@ -56,15 +57,28 @@ def Registro():
 
   NomeLabel = Label(RightFrame, text="Nome:", font=("Century Gothic", 20), bg="MIDNIGHTBLUE", fg="white")
   NomeLabel.place(x=5, y=5)
-  NomeEntry = Entry(RightFrame, width=39)
+  NomeEntry = ttk.Entry(RightFrame, width=39)
   NomeEntry.place(x=100, y=18)
 
   EmailLabel = Label(RightFrame, text="Email:", font=("Century Gothic", 20), bg="MIDNIGHTBLUE", fg="white")
   EmailLabel.place(x=5,y=55)
-  EmailEntry = Entry(RightFrame,width=39)
+  EmailEntry = ttk.Entry(RightFrame,width=39)
   EmailEntry.place(x=100, y=68)
 
-  RegisterBotao = ttk.Button(RightFrame, text="Salvar", width=20)
+  def RegistroToDataBase():#FUNÇÃO PEGANDO OS DADOS PARA INSERIR NO BANCO
+      Nome = NomeEntry.get()
+      Email = EmailEntry.get()
+      Usuario = UserEntry.get()
+      Senha = PassEntry.get()
+
+      DataBase.cursor.execute("""
+      INSERT INTO Usuarios (Nome, Email, Usuario, Senha) VALUES (?,?,?,?)
+      """,(Nome, Email, Usuario, Senha)) #INFORMANDO OS VALORES A SEREM INSERIDOS NO BANCO ATRAVES DAS VARIAVEIS
+
+      DataBase.conexao.commit() #SEMPRE USAR O COMMIT PARA INSERIR NO BANCO DE DADOS PARA SALVAR
+      messagebox.showinfo(title="Registro Info", message="Usuário Cadastrado com Sucesso!")
+
+  RegisterBotao = ttk.Button(RightFrame, text="Salvar", width=20, command=RegistroToDataBase)
   RegisterBotao.place(x=50, y=260)
 
   def VoltarLogin ():
